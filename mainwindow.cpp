@@ -10,6 +10,7 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QTextCodec>
+#include <QSettings>
 
 
 
@@ -24,6 +25,10 @@ MainWindow::MainWindow(QWidget *parent)
       m_serial(new QSerialPort(this)),
       m_status(new QLabel)
 {
+    QCoreApplication::setOrganizationName(QString("gentlist"));
+    QCoreApplication::setApplicationName(QString("bespokePlotter"));
+
+
     m_ui->setupUi(this);
     m_ui->baudRateBox->setInsertPolicy(QComboBox::NoInsert);
 
@@ -41,11 +46,45 @@ MainWindow::MainWindow(QWidget *parent)
     fillPortsParameters();
     fillPortsInfo();
     updateSettings();
-
+    QSettings();
     initActionsConnections(); // 초기화
 
     m_hpglDownloader = nullptr;
     connect(m_ui->startButton, SIGNAL(released()),this, SLOT(startSearch()));
+}
+
+QString appName("HKEY_CURRENT_USER\\Software\\Classes\\BespokePlotter");
+QString path("HKEY_CURRENT_USER\\Software\\Classes\\BespokePlotter\\shell\\open\\command");
+QSettings setUrlProtocol(appName, QSettings::NativeFormat);
+QSettings setPath(path, QSettings::NativeFormat);
+
+void MainWindow::about()
+{
+
+    QMessageBox::about(this, tr("BespokePlotter"),
+                       tr("<b>비스포크 플로터 프로그램을 사용해주셔서 감사합니다.</b>"
+                          "웹 서버에 저장된 파일을 불러오기 위해선 사용자 PC에 OpenSSL이 설치되어 있어야 합니다."
+                          "https://slproweb.com/products/Win32OpenSSL.html"
+                          "비스포크 매니저 혹은 상기 경로에서 다운로드 및 설치 이후 사용해주시기 바랍니다"));
+}
+
+void MainWindow::QSettings()
+{
+    if(setPath.value("Default").toString() == NULL)
+    {
+    qDebug() << "reg NULL";
+    qDebug() << "레지스트리 등록";
+    setUrlProtocol.setValue("URL Protocol",QString(""));
+    setPath.setValue("Default","C:\\Program Files\\BespokePlotterDemo\\BespokePlotter.exe");
+    qDebug() << "레지스트리 등록 완료";
+    qDebug() << setPath.value("Default").toString();
+    }
+    else
+    {
+    qDebug() << "reg NOT NULL";
+    qDebug() << "등록된 레지스트리 있음";
+    qDebug() << setPath.value("Default").toString();
+    }
 }
 
 
@@ -72,12 +111,12 @@ void MainWindow::textDownloaded()
 //    qDebug() << "5";
 //    qDebug() << m_hpglDownloader->downloadedData();
 
-    QString data (m_hpglDownloader->downloadedData().toStdString().c_str());
-//    qDebug() << QSslSocket::sslLibraryBuildVersionString();
+    QString data (m_hpglDownloader->downloadedData());
 //    qDebug() << QSslSocket :: sslLibraryBuildVersionString ()  ;
 //    qDebug() << QSslSocket::supportsSsl();
 //    qDebug() << "6";
-//    qDebug() << data;
+    //    qDebug() << QSslSocket::sslLibraryBuildVersionString();
+    qDebug() << data;
     const QByteArray requestData = data.toUtf8();
 //    qDebug() << "7";
 //    qDebug() << requestData;
@@ -122,7 +161,6 @@ void MainWindow::showPortInfo(int idx)
 void MainWindow::apply()
 {
     updateSettings();
-
     qDebug() << "apply()";
     showStatusMessage(tr("현재 선택된 포트 : %1").arg(m_currentSettings.name));
 //    hide();
@@ -159,6 +197,7 @@ void MainWindow::checkCustomDevicePathPolicy(int idx)
 
 void MainWindow::fillPortsParameters()
 {
+    qDebug() << "fillPortsParameters()";
     m_ui->baudRateBox->addItem(QStringLiteral("9600"), QSerialPort::Baud9600);
     m_ui->baudRateBox->addItem(QStringLiteral("19200"), QSerialPort::Baud19200);
     m_ui->baudRateBox->addItem(QStringLiteral("38400"), QSerialPort::Baud38400);
@@ -319,6 +358,7 @@ void MainWindow::handleError(QSerialPort::SerialPortError error)
 void MainWindow::initActionsConnections()
 {
     qDebug() << "initActionsConnections";
+    connect(m_ui->actionAbout, &QAction::triggered, this, &MainWindow::about);
     connect(m_ui->connButton, &QPushButton::clicked, this, &MainWindow::openSerialPort);
     connect(m_ui->disconnButton, &QPushButton::clicked, this, &MainWindow::closeSerialPort);
 }

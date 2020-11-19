@@ -6,424 +6,208 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>911</width>
-    <height>685</height>
+    <width>401</width>
+    <height>586</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Bespoke Plotter Demo</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="sendButton">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>600</y>
-      <width>872</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>출력</string>
-    </property>
-   </widget>
-   <widget class="QGroupBox" name="connSettingGroup">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>17</y>
-      <width>431</width>
-      <height>391</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>연결 설정</string>
-    </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="comPortLabel">
-       <property name="text">
-        <string>COM</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="0">
-      <widget class="QLabel" name="parityLabel">
-       <property name="text">
-        <string>Parity</string>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="0">
-      <widget class="QLabel" name="baudRateLabel">
-       <property name="text">
-        <string>Baud Rate</string>
-       </property>
-      </widget>
-     </item>
-     <item row="10" column="0">
-      <widget class="QLabel" name="stopBitsLabel">
-       <property name="text">
-        <string>Stop Bits</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="0">
-      <widget class="QLabel" name="dataBitsLabel">
-       <property name="text">
-        <string>Data Bits</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="1">
-      <widget class="QComboBox" name="parityBox"/>
-     </item>
-     <item row="12" column="0">
-      <widget class="QCheckBox" name="localEchoCheckBox">
-       <property name="text">
-        <string>Local echo</string>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="7" column="1">
-      <widget class="QComboBox" name="baudRateBox"/>
-     </item>
-     <item row="11" column="0">
-      <widget class="QLabel" name="stopBitsLabel_2">
-       <property name="text">
-        <string>Flow control</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="descriptionLabel">
-       <property name="text">
-        <string>Description:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="locationLabel">
-       <property name="text">
-        <string>Location:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="vidLabel">
-       <property name="text">
-        <string>Vendor ID:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="11" column="1">
-      <widget class="QComboBox" name="flowControlBox"/>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="manufacturerLabel">
-       <property name="text">
-        <string>Manufacturer:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="1">
-      <widget class="QComboBox" name="dataBitsBox"/>
-     </item>
-     <item row="10" column="1">
-      <widget class="QComboBox" name="stopBitsBox"/>
-     </item>
-     <item row="0" column="1">
-      <widget class="QComboBox" name="comPortBox"/>
-     </item>
-     <item row="6" column="0">
-      <widget class="QLabel" name="pidLabel">
-       <property name="text">
-        <string>Product ID:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="serialNumberLabel">
-       <property name="text">
-        <string>Serial number:</string>
-       </property>
-      </widget>
-     </item>
-     <item row="13" column="0" colspan="2">
-      <widget class="QPushButton" name="applyButton">
-       <property name="text">
-        <string>현재 설정 적용</string>
-       </property>
-      </widget>
-     </item>
-     <item row="14" column="0" colspan="2">
-      <widget class="QPushButton" name="connButton">
-       <property name="text">
-        <string>연결</string>
-       </property>
-      </widget>
-     </item>
-     <item row="15" column="0" colspan="2">
-      <widget class="QPushButton" name="disconnButton">
-       <property name="text">
-        <string>연결 해제</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QGroupBox" name="setPlotterGroup">
-    <property name="geometry">
-     <rect>
-      <x>459</x>
-      <y>17</y>
-      <width>433</width>
-      <height>562</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>플로터 설정</string>
-    </property>
-    <layout class="QGridLayout" name="gridLayout_4">
-     <item row="0" column="0" colspan="2">
-      <widget class="QGroupBox" name="setPaperGroup">
-       <property name="title">
-        <string>용지 설정</string>
-       </property>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLabel" name="widthLabel">
-          <property name="text">
-           <string>너비</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="widthLineEdit"/>
-        </item>
-        <item>
-         <widget class="QLabel" name="heightLabel">
-          <property name="text">
-           <string>높이</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="heightLineEdit"/>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QGroupBox" name="colorSelectGroup">
-       <property name="title">
-        <string>선택 색상</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QComboBox" name="selectColorBox"/>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QGroupBox" name="setPenGroup">
-       <property name="title">
-        <string>펜 설정</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="QLabel" name="penAmountLabel">
-          <property name="text">
-           <string>펜의 갯수</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="penAmountBox"/>
-        </item>
-        <item>
-         <widget class="QLabel" name="pen1Label">
-          <property name="text">
-           <string>펜 1</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="pen1Box"/>
-        </item>
-        <item>
-         <widget class="QLabel" name="pen3Label">
-          <property name="text">
-           <string>펜 3</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="pen3Box"/>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QGroupBox" name="printGroup">
-       <property name="title">
-        <string>출력</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <item>
-         <widget class="QCheckBox" name="pattenrInfoCheckbox">
-          <property name="text">
-           <string>패턴 정보</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="dotNameCheckbox">
-          <property name="text">
-           <string>점 이름</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="lineNameCheckbox">
-          <property name="text">
-           <string>선 이름</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="patternNoteCheckbox">
-          <property name="text">
-           <string>패턴 쪽지</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QGroupBox" name="setPrintdataGroup">
-       <property name="title">
-        <string>출력 데이터</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_5">
-        <item>
-         <widget class="QCheckBox" name="printDateCheckbox">
-          <property name="text">
-           <string> 출력일</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="customerNumCheckbox">
-          <property name="text">
-           <string> 고객 번호</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="orderNumCheckbox">
-          <property name="text">
-           <string> 주문 번호</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="fileNameCheckbox">
-          <property name="text">
-           <string> 파일명</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_12">
-          <property name="text">
-           <string>출력 위치 점 이름</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="lineEdit_3"/>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QGroupBox" name="fileSelectGroup">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>420</y>
-      <width>433</width>
-      <height>169</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>HPGL URL</string>
-    </property>
-    <layout class="QGridLayout" name="gridLayout_3">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>URL</string>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLineEdit" name="inputUrl"/>
-     </item>
-     <item row="2" column="0">
-      <widget class="QPushButton" name="startButton">
-       <property name="text">
-        <string>시작</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0">
+     <widget class="QGroupBox" name="connSettingGroup">
+      <property name="title">
+       <string>연결 설정</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="10" column="0">
+        <widget class="QLabel" name="stopBitsLabel">
+         <property name="text">
+          <string>Stop Bits</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="1">
+        <widget class="QComboBox" name="flowControlBox"/>
+       </item>
+       <item row="15" column="0" colspan="2">
+        <widget class="QPushButton" name="disconnButton">
+         <property name="text">
+          <string>연결 해제</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QComboBox" name="dataBitsBox"/>
+       </item>
+       <item row="13" column="0" colspan="2">
+        <widget class="QPushButton" name="applyButton">
+         <property name="text">
+          <string>현재 설정 적용</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="0">
+        <widget class="QCheckBox" name="localEchoCheckBox">
+         <property name="text">
+          <string>Local echo</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="descriptionLabel">
+         <property name="text">
+          <string>Description:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QLabel" name="parityLabel">
+         <property name="text">
+          <string>Parity</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="pidLabel">
+         <property name="text">
+          <string>Product ID:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="serialNumberLabel">
+         <property name="text">
+          <string>Serial number:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QLabel" name="vidLabel">
+         <property name="text">
+          <string>Vendor ID:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QLabel" name="baudRateLabel">
+         <property name="text">
+          <string>Baud Rate</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QComboBox" name="parityBox"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="manufacturerLabel">
+         <property name="text">
+          <string>Manufacturer:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QComboBox" name="baudRateBox"/>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="locationLabel">
+         <property name="text">
+          <string>Location:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="comPortBox"/>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="comPortLabel">
+         <property name="text">
+          <string>COM</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="0">
+        <widget class="QLabel" name="stopBitsLabel_2">
+         <property name="text">
+          <string>Flow control</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="dataBitsLabel">
+         <property name="text">
+          <string>Data Bits</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="1">
+        <widget class="QComboBox" name="stopBitsBox"/>
+       </item>
+       <item row="14" column="0" colspan="2">
+        <widget class="QPushButton" name="connButton">
+         <property name="text">
+          <string>연결</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QGroupBox" name="fileSelectGroup">
+      <property name="title">
+       <string>HPGL URL</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="1" column="0">
+        <widget class="QLineEdit" name="inputUrl"/>
+       </item>
+       <item row="0" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>URL</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QPushButton" name="startButton">
+         <property name="text">
+          <string>시작</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar">
+  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>911</width>
+     <width>401</width>
      <height>20</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuBespokePlotter">
-    <property name="title">
-     <string>열기</string>
-    </property>
-    <addaction name="separator"/>
-   </widget>
    <widget class="QMenu" name="menu">
     <property name="title">
      <string>도움말</string>
     </property>
+    <addaction name="actionAbout"/>
    </widget>
-   <addaction name="menuBespokePlotter"/>
    <addaction name="menu"/>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionAbout">
+   <property name="text">
+    <string>정보</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

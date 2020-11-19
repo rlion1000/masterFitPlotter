@@ -54,10 +54,11 @@ private slots:
     void textDownloaded();
 
 private:
-
+    void QSettings();
     void fillPortsParameters();
     void fillPortsInfo();
     void updateSettings();
+    void about();
 
 private:
     void initActionsConnections();
