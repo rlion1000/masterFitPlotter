@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QSerialPort>
+#include <QDesktopServices>
 
 
 QT_BEGIN_NAMESPACE
@@ -38,8 +39,10 @@ public:
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+signals:
+    void incomingURL(QString path);
 private slots:
+//    void handleURL(const QUrl &url);
     void showPortInfo(int idx);
     void apply();
     void checkCustomBaudRatePolicy(int idx);
@@ -54,7 +57,9 @@ private slots:
     void textDownloaded();
 
 private:
-    void QSettings();
+    bool registerProtocol();
+//    void QSettings();
+    void checkApplicationArguments();
     void fillPortsParameters();
     void fillPortsInfo();
     void updateSettings();

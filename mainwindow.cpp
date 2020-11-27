@@ -3,6 +3,7 @@
 #include "hpgldownloader.h"
 
 #include <QLabel>
+#include <QApplication>
 #include <QIntValidator>
 #include <QLineEdit>
 #include <QSerialPort>
@@ -11,9 +12,7 @@
 #include <QDebug>
 #include <QTextCodec>
 #include <QSettings>
-
-
-
+#include <QDir>
 
 static const char blankString[] = QT_TRANSLATE_NOOP("MainWindow", "N/A");
 // 변수에 tr 사용 위해 QT_TRANSLATE_NOOP매크로 정의
@@ -46,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
     fillPortsParameters();
     fillPortsInfo();
     updateSettings();
+    registerProtocol();
     QSettings();
     initActionsConnections(); // 초기화
 
@@ -53,81 +53,76 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_ui->startButton, SIGNAL(released()),this, SLOT(startSearch()));
 }
 
-QString appName("HKEY_CURRENT_USER\\Software\\Classes\\BespokePlotter");
-QString path("HKEY_CURRENT_USER\\Software\\Classes\\BespokePlotter\\shell\\open\\command");
-QSettings setUrlProtocol(appName, QSettings::NativeFormat);
-QSettings setPath(path, QSettings::NativeFormat);
+//QString appName("HKEY_CURRENT_USER\\Software\\Classes\\BespokePlotter");
+//QString path("HKEY_CURRENT_USER\\Software\\Classes\\BespokePlotter\\shell\\open\\command");
+//QSettings setUrlProtocol(appName, QSettings::NativeFormat);
+//QSettings setPath(path, QSettings::NativeFormat);
+//const QString appPath = QDir::toNativeSeparators(QCoreApplication::applicationFilePath());
+//const QString regPath = QStringLiteral("HKEY_CURRENT_USER\\Software\\Classes\\") + urlScheme;
 
-void MainWindow::about()
+// ========================================================================================================================
+// App 실행 시 URL Scheme 등록 Protocol
+bool MainWindow::registerProtocol()
 {
 
-    QMessageBox::about(this, tr("BespokePlotter"),
-                       tr("<b>비스포크 플로터 프로그램을 사용해주셔서 감사합니다.</b>"
-                          "웹 서버에 저장된 파일을 불러오기 위해선 사용자 PC에 OpenSSL이 설치되어 있어야 합니다."
-                          "https://slproweb.com/products/Win32OpenSSL.html"
-                          "비스포크 매니저 혹은 상기 경로에서 다운로드 및 설치 이후 사용해주시기 바랍니다"));
-}
+   #ifdef Q_OS_WIN
+    const QString urlScheme = "BespokePlotter";
+    const QString appPath = QDir::toNativeSeparators(QCoreApplication::applicationFilePath());
+    const QString regPath = QStringLiteral("HKEY_CURRENT_USER\\Software\\Classes\\") + urlScheme;
+    QScopedPointer<QSettings> reg(new QSettings(regPath, QSettings::NativeFormat));
 
-void MainWindow::QSettings()
-{
-    if(setPath.value("Default").toString() == NULL)
-    {
-    qDebug() << "reg NULL";
-    qDebug() << "레지스트리 등록";
-    setUrlProtocol.setValue("URL Protocol",QString(""));
-    setPath.setValue("Default","C:\\Program Files\\BespokePlotterDemo\\BespokePlotter.exe");
-    qDebug() << "레지스트리 등록 완료";
-    qDebug() << setPath.value("Default").toString();
-    }
-    else
-    {
-    qDebug() << "reg NOT NULL";
-    qDebug() << "등록된 레지스트리 있음";
-    qDebug() << setPath.value("Default").toString();
-    }
-}
+   reg->setValue(QStringLiteral("Default"), "Bespoke Plotter");
+   reg->setValue(QStringLiteral("URL Protocol"), QString());
+   reg->beginGroup(QStringLiteral("shell"));
+   reg->beginGroup(QStringLiteral("open"));
+   reg->beginGroup(QStringLiteral("command"));
+   reg->setValue(QStringLiteral("Default"), appPath + QLatin1String(" %1"));
 
+// main argument에 "bespokeplotter://" 스트링 포함 시 argument[1]값 inputUrl setText
+   for(int i = 0; i < QApplication::arguments().count(); i++)
+   {
+      QString arg = QApplication::arguments().at(i);
+      if(arg.contains("bespokeplotter://"))
+      {
+        QString arg1 = QApplication::arguments().at(1);
+        QStringList list = arg1.split("bespokeplotter://");
+        QString arg1Split = list.at(1);
+        m_ui->inputUrl->setText(arg1Split);
+      }
+   }
+
+
+   return true;
+
+   #elif defined(Q_OS_UNIX)
+   //TODO
+   Logger::getInstance()->Info(tr("Cannot integrate with web browser - unsupported system"));
+   return false;
+   #endif
+   return false;
+}
+// ========================================================================================================================
+// url 입력 시 다운로드 이벤트 발생
 
 void MainWindow::startSearch()
 {
     QUrl inputUrl = m_ui->inputUrl->text();
-    qDebug() << "1";
-    qDebug() << this;
     m_hpglDownloader = new HpglDownloader(inputUrl,this);
-    qDebug() << "2";
-    qDebug() << m_hpglDownloader;
-    qDebug() << "3";
-    qDebug() << SIGNAL(signalDownloaded());
-    qDebug() << "4";
-    qDebug() << SLOT(textDownloaded());
-
-
     connect(m_hpglDownloader,SIGNAL(signalDownloaded()),this,SLOT(textDownloaded()));
-
 }
+
+
+// ========================================================================================================================
+// s3 url에서 다운로드
 
 void MainWindow::textDownloaded()
 {
-//    qDebug() << "5";
-//    qDebug() << m_hpglDownloader->downloadedData();
-
     QString data (m_hpglDownloader->downloadedData());
-//    qDebug() << QSslSocket :: sslLibraryBuildVersionString ()  ;
-//    qDebug() << QSslSocket::supportsSsl();
-//    qDebug() << "6";
-    //    qDebug() << QSslSocket::sslLibraryBuildVersionString();
     qDebug() << data;
     const QByteArray requestData = data.toUtf8();
-//    qDebug() << "7";
-//    qDebug() << requestData;
     m_serial->write(requestData);
     qDebug("job is done");
 }
-
-//void MainWindow::writeData(const QByteArray &data)
-//{
-//    m_serial->write(data);
-//}
 
 
 // ========================================================================================================================
@@ -136,7 +131,6 @@ MainWindow::~MainWindow()
 {
     delete m_ui;
 }
-
 
 // ========================================================================================================================
 // 포트 연결 정보 setText
@@ -324,7 +318,6 @@ if(m_serial->open(QIODevice::ReadWrite)) {
     }
 }
 
-
 // ========================================================================================================================
 // closeSerialPort
 
@@ -339,7 +332,6 @@ void MainWindow::closeSerialPort()
     m_ui->disconnButton->setEnabled(false);
     showStatusMessage(tr("연결이 해제되었습니다."));
 }
-
 
 // ========================================================================================================================
 // handleError
@@ -368,7 +360,14 @@ void MainWindow::showStatusMessage(const QString &message)
     m_status->setText(message);
 }
 // ========================================================================================================================
+// about()
 
+void MainWindow::about()
+{
+
+    QMessageBox::about(this, tr("BespokePlotter"),
+                       tr("Gentlist CEO email  :  rlion1000@gmail.com"));
+}
 
 
 
