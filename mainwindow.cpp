@@ -27,7 +27,6 @@ MainWindow::MainWindow(QWidget *parent)
     QCoreApplication::setOrganizationName(QString("gentlist"));
     QCoreApplication::setApplicationName(QString("bespokePlotter"));
 
-
     m_ui->setupUi(this);
     m_ui->baudRateBox->setInsertPolicy(QComboBox::NoInsert);
 
@@ -48,13 +47,15 @@ MainWindow::MainWindow(QWidget *parent)
     registerProtocol();
     QSettings();
     initActionsConnections(); // 초기화
-
+    apply();
+    openSerialPort();
     m_hpglDownloader = nullptr;
     connect(m_ui->startButton, SIGNAL(released()),this, SLOT(startSearch()));
+    startSearch();
 }
 
-//QString appName("HKEY_CURRENT_USER\\Software\\Classes\\BespokePlotter");
-//QString path("HKEY_CURRENT_USER\\Software\\Classes\\BespokePlotter\\shell\\open\\command");
+//QString appName("HKEY_CURRENT_USER\\Software\\Classes\\MasterFitPlotter");
+//QString path("HKEY_CURRENT_USER\\Software\\Classes\\MasterFitPlotter\\shell\\open\\command");
 //QSettings setUrlProtocol(appName, QSettings::NativeFormat);
 //QSettings setPath(path, QSettings::NativeFormat);
 //const QString appPath = QDir::toNativeSeparators(QCoreApplication::applicationFilePath());
@@ -66,26 +67,26 @@ bool MainWindow::registerProtocol()
 {
 
    #ifdef Q_OS_WIN
-    const QString urlScheme = "BespokePlotter";
+    const QString urlScheme = "MasterFitPlotter";
     const QString appPath = QDir::toNativeSeparators(QCoreApplication::applicationFilePath());
     const QString regPath = QStringLiteral("HKEY_CURRENT_USER\\Software\\Classes\\") + urlScheme;
     QScopedPointer<QSettings> reg(new QSettings(regPath, QSettings::NativeFormat));
 
-   reg->setValue(QStringLiteral("Default"), "Bespoke Plotter");
+   reg->setValue(QStringLiteral("Default"), "MasterFit Plotter");
    reg->setValue(QStringLiteral("URL Protocol"), QString());
    reg->beginGroup(QStringLiteral("shell"));
    reg->beginGroup(QStringLiteral("open"));
    reg->beginGroup(QStringLiteral("command"));
    reg->setValue(QStringLiteral("Default"), appPath + QLatin1String(" %1"));
 
-// main argument에 "bespokeplotter://" 스트링 포함 시 argument[1]값 inputUrl setText
+// main argument에 "masterfitplotter://" 스트링 포함 시 argument[1]값 inputUrl setText
    for(int i = 0; i < QApplication::arguments().count(); i++)
    {
       QString arg = QApplication::arguments().at(i);
-      if(arg.contains("bespokeplotter://"))
+      if(arg.contains("masterfitplotter://"))
       {
         QString arg1 = QApplication::arguments().at(1);
-        QStringList list = arg1.split("bespokeplotter://");
+        QStringList list = arg1.split("masterfitplotter://");
         QString arg1Split = list.at(1);
         m_ui->inputUrl->setText(arg1Split);
       }
@@ -122,6 +123,8 @@ void MainWindow::textDownloaded()
     const QByteArray requestData = data.toUtf8();
     m_serial->write(requestData);
     qDebug("job is done");
+    MainWindow::close();
+    qDebug("close();");
 }
 
 
