@@ -48,7 +48,7 @@ private slots:
     void checkCustomBaudRatePolicy(int idx);
     void checkCustomDevicePathPolicy(int idx);
 
-    void openSerialPort();
+    bool openSerialPort();
     void closeSerialPort();
     void handleError(QSerialPort::SerialPortError error);
 //    void writeData(const QByteArray &data);

@@ -13,6 +13,8 @@
 #include <QTextCodec>
 #include <QSettings>
 #include <QDir>
+#include <QSharedMemory>
+#include <QMessageBox>
 
 static const char blankString[] = QT_TRANSLATE_NOOP("MainWindow", "N/A");
 // 변수에 tr 사용 위해 QT_TRANSLATE_NOOP매크로 정의
@@ -48,10 +50,23 @@ MainWindow::MainWindow(QWidget *parent)
     QSettings();
     initActionsConnections(); // 초기화
     apply();
-    openSerialPort();
+
     m_hpglDownloader = nullptr;
     connect(m_ui->startButton, SIGNAL(released()),this, SLOT(startSearch()));
-    startSearch();
+
+    if (openSerialPort()){
+        if (m_serial->isOpen()){
+            qDebug() << "openSerialPort() true";
+            qDebug() << "m_serial->isOpen() true";
+            startSearch();
+        } else {
+            qDebug() << "m_serial->isOpen() false";
+        }
+    } else{
+        qDebug() << "openSerialPort() false";
+    }
+
+
 }
 
 //QString appName("HKEY_CURRENT_USER\\Software\\Classes\\MasterFitPlotter");
@@ -107,6 +122,7 @@ bool MainWindow::registerProtocol()
 
 void MainWindow::startSearch()
 {
+    qDebug() << "startSearch()";
     QUrl inputUrl = m_ui->inputUrl->text();
     m_hpglDownloader = new HpglDownloader(inputUrl,this);
     connect(m_hpglDownloader,SIGNAL(signalDownloaded()),this,SLOT(textDownloaded()));
@@ -119,12 +135,16 @@ void MainWindow::startSearch()
 void MainWindow::textDownloaded()
 {
     QString data (m_hpglDownloader->downloadedData());
+    qDebug("below is HPGL string data");
     qDebug() << data;
     const QByteArray requestData = data.toUtf8();
     m_serial->write(requestData);
-    qDebug("job is done");
-    MainWindow::close();
-    qDebug("close();");
+    if(m_serial->waitForBytesWritten(100000)){
+        qDebug("serial write done");
+//        MainWindow::close();
+//        qDebug("close");
+    };
+
 }
 
 
@@ -293,7 +313,7 @@ void MainWindow::updateSettings()
 // openSerialPort
 
 
-void MainWindow::openSerialPort()
+bool MainWindow::openSerialPort()
 {
     qDebug() << "openSerialPort()";
     Settings p = m_currentSettings;
@@ -310,14 +330,18 @@ void MainWindow::openSerialPort()
     m_serial->setFlowControl(p.flowControl);
     qDebug() << p.flowControl;
 if(m_serial->open(QIODevice::ReadWrite)) {
+        m_ui->applyButton->setEnabled(false);
         m_ui->connButton->setEnabled(false);
         m_ui->disconnButton->setEnabled(true);
         showStatusMessage(tr("%1 포트에 연결되었습니다. 설정 정보: %2, %3, %4, %5, %6")
                           .arg(p.name).arg(p.stringBaudRate).arg(p.stringDataBits)
                           .arg(p.stringParity).arg(p.stringStopBits).arg(p.stringFlowControl));
+        return true;
     } else {
+
         QMessageBox::critical(this, tr("Error"), m_serial->errorString());
         showStatusMessage(tr("Open error"));
+       return false;
     }
 }
 
@@ -330,7 +354,7 @@ void MainWindow::closeSerialPort()
         m_serial->close();
     qDebug() << "close port";
 
-
+    m_ui->applyButton->setEnabled(true);
     m_ui->connButton->setEnabled(true);
     m_ui->disconnButton->setEnabled(false);
     showStatusMessage(tr("연결이 해제되었습니다."));
