@@ -15,6 +15,7 @@
 #include <QDir>
 #include <QSharedMemory>
 #include <QMessageBox>
+#include <QTimer>
 
 static const char blankString[] = QT_TRANSLATE_NOOP("MainWindow", "N/A");
 // 변수에 tr 사용 위해 QT_TRANSLATE_NOOP매크로 정의
@@ -118,6 +119,13 @@ bool MainWindow::registerProtocol()
    return false;
 }
 // ========================================================================================================================
+// 프로그램 종료 slot함수
+void MainWindow::exitProgram()
+{
+    qDebug("5 초 후 close");
+    MainWindow::close();
+}
+// ========================================================================================================================
 // url 입력 시 다운로드 이벤트 발생
 
 void MainWindow::startSearch()
@@ -138,12 +146,14 @@ void MainWindow::textDownloaded()
     qDebug("below is HPGL string data");
     qDebug() << data;
     const QByteArray requestData = data.toUtf8();
+    qDebug("serial write start");
     m_serial->write(requestData);
-    if(m_serial->waitForBytesWritten(100000)){
-        qDebug("serial write done");
-//        MainWindow::close();
-//        qDebug("close");
-    };
+
+    QTimer::singleShot(5*1000, this, SLOT(exitProgram())); // QTimer 5초 설정
+
+//    if(m_serial->waitForBytesWritten(100000)){
+//        qDebug("serial write done");
+//    };
 
 }
 

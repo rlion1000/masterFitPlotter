@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QSerialPort>
 #include <QDesktopServices>
+#include <QTimer>
 
 
 QT_BEGIN_NAMESPACE
@@ -51,6 +52,7 @@ private slots:
     bool openSerialPort();
     void closeSerialPort();
     void handleError(QSerialPort::SerialPortError error);
+    void exitProgram();
 //    void writeData(const QByteArray &data);
 
     void startSearch();
