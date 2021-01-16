@@ -148,12 +148,17 @@ void MainWindow::textDownloaded()
     const QByteArray requestData = data.toUtf8();
     qDebug("serial write start");
     m_serial->write(requestData);
-
-    QTimer::singleShot(5*1000, this, SLOT(exitProgram())); // QTimer 5초 설정
-
-//    if(m_serial->waitForBytesWritten(100000)){
-//        qDebug("serial write done");
-//    };
+    if(m_serial->waitForBytesWritten(-1) == true){
+            qDebug("serial write done");
+            MainWindow::close();
+            QMessageBox::information(this,"알림","출력이 완료되었습니다. 프로그램을 종료합니다.");
+            qDebug("close");
+        };
+//    qDebug("waitForBytesWritten(-1)");
+//    qDebug() << m_serial->waitForBytesWritten(-1);
+//    qDebug("waitForBytesWritten()");
+//    qDebug() << m_serial->waitForBytesWritten();
+//    QTimer::singleShot(5*1000, this, SLOT(exitProgram())); // QTimer 5초 설정
 
 }
 
